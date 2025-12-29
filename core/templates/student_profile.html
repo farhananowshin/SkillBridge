@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* Profile Specific Styles */
+    .profile-header {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+        text-align: center;
+        margin-bottom: 30px;
+        border: 1px solid #f1f1f1;
+    }
+    .profile-img-large {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid #f8f9fa;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    .profile-card {
+        background: white;
+        border-radius: 15px;
+        padding: 35px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+        border: 1px solid #f1f1f1;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #636e72;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 1px solid #eee;
+        background-color: #fcfcfc;
+        font-size: 15px;
+        transition: 0.3s;
+    }
+    .form-control:focus {
+        border-color: var(--brand-color);
+        box-shadow: 0 0 0 4px rgba(32, 201, 151, 0.1);
+        background-color: white;
+    }
+    
+    /* Read-only field style */
+    .form-control:disabled {
+        background-color: #f1f2f6;
+        color: #b2bec3;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        
+        <div class="col-lg-4 col-md-5 mb-4">
+            <div class="profile-header">
+                {% if user.profile_photo %}
+                    <img src="{{ user.profile_photo.url }}" class="profile-img-large" alt="Profile Picture">
+                {% else %}
+                    <div class="profile-img-large d-flex align-items-center justify-content-center bg-light text-muted mx-auto" style="font-size: 60px; font-weight: bold;">
+                        {{ user.first_name|first|default:user.username|first|upper }}
+                    </div>
+                {% endif %}
+                
+                <h3 class="fw-bold mb-1">{{ user.first_name }} {{ user.last_name }}</h3>
+                <p class="text-muted mb-3">@{{ user.username }}</p>
+                
+                <div class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill mb-4">
+                    Student Account
+                </div>
+                
+                <div class="border-top pt-4 text-start">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted small">Student ID</span>
+                        <span class="fw-bold text-dark">{{ user.student_id|default:"Not Set" }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted small">Department</span>
+                        <span class="fw-bold text-dark">{{ user.department|default:"General" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 col-md-7">
+            <div class="profile-card">
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                    <h4 class="fw-bold mb-0 text-dark">Update Profile Information</h4>
+                    <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                        &larr; Dashboard
+                    </a>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <label class="form-label">Change Profile Photo</label>
+                            <input type="file" name="profile_photo" class="form-control" accept="image/*">
+                            <div class="form-text text-muted small">Recommended size: 500x500px (JPG, PNG)</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            <input type="text" name="first_name" value="{{ user.first_name }}" class="form-control" required placeholder="Enter first name">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control" required placeholder="Enter last name">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Email Address <small class="text-danger">(Cannot be changed)</small></label>
+                            <input type="email" value="{{ user.email }}" class="form-control" disabled title="Contact admin to change email">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" name="phone_number" value="{{ user.phone_number|default:'' }}" class="form-control" placeholder="+880 1XXX...">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Student ID</label>
+                            <input type="text" name="student_id" value="{{ user.student_id|default:'' }}" class="form-control" placeholder="e.g. 2023-10-50">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Semester</label>
+                            <input type="text" name="semester" value="{{ user.semester|default:'' }}" class="form-control" placeholder="e.g. 4th Semester">
+                        </div>
+
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-brand px-5 py-3 w-100 fs-6 text-uppercase fw-bold shadow-sm">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

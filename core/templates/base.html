@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillBridge - Master Your Future</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --brand-color: #20c997;
+            --brand-dark: #17a589;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --bg-body: #f8f9fa;
+            --navbar-height: 80px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding-top: var(--navbar-height);
+            opacity: 0; /* For fade-in animation */
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        /* Page Fade In Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2, h3, h4, h5, h6, .brand-font { font-family: 'Poppins', sans-serif; }
+
+        /* Navbar */
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            height: var(--navbar-height);
+        }
+        .navbar-brand { font-weight: 700; font-size: 24px; color: var(--text-main) !important; }
+        .text-brand { color: var(--brand-color); }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-muted) !important;
+            margin: 0 10px;
+            transition: 0.3s;
+            position: relative;
+        }
+        .nav-link:hover { color: var(--brand-color) !important; }
+        
+        /* Active Link Indicator */
+        .nav-link.active { color: var(--brand-color) !important; font-weight: 600; }
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background-color: var(--brand-color);
+            border-radius: 50%;
+        }
+
+        /* Buttons */
+        .btn-brand {
+            background-color: var(--brand-color);
+            color: white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: 600;
+            border: none;
+            transition: 0.3s;
+        }
+        .btn-brand:hover {
+            background-color: var(--brand-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(32, 201, 151, 0.3);
+        }
+
+        /* Toast Notification Styling */
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1055;
+        }
+        .custom-toast {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .toast-header { border: none; background: white; padding: 15px 20px 5px; }
+        .toast-body { padding: 0 20px 20px; background: white; font-size: 15px; color: #555; }
+
+        /* Footer */
+        .main-footer {
+            background: white;
+            padding: 60px 0 30px;
+            margin-top: 80px;
+            border-top: 1px solid #eee;
+        }
+        .footer-link { color: var(--text-muted); text-decoration: none; display: block; margin-bottom: 10px; transition: 0.3s; }
+        .footer-link:hover { color: var(--brand-color); transform: translateX(5px); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand brand-font" href="{% url 'home' %}">
+                <span class="text-brand">Skill</span>Bridge
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'course_list' %}">All Courses</a></li>
+                    
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'student_dashboard' %}">Dashboard</a></li>
+                        <li class="nav-item dropdown ms-3">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+                                {% if user.profile_photo %}
+                                    <img src="{{ user.profile_photo.url }}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                {% else %}
+                                    <div style="width: 40px; height: 40px; background: var(--brand-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                                        {{ user.first_name|first|default:user.username|first|upper }}
+                                    </div>
+                                {% endif %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2 rounded-3">
+                                <li><a class="dropdown-item rounded-2" href="{% url 'student_profile' %}">👤 My Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item rounded-2 text-danger" href="{% url 'student_logout' %}">🚪 Logout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item ms-3"><a class="nav-link fw-bold text-dark" href="{% url 'student_login' %}">Log In</a></li>
+                        <li class="nav-item ms-2"><a class="btn btn-brand" href="{% url 'student_register' %}">Sign Up Free</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% if messages %}
+    <div class="toast-container">
+        {% for message in messages %}
+        <div class="toast custom-toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto {% if message.tags == 'success' %}text-success{% elif message.tags == 'error' %}text-danger{% else %}text-info{% endif %}">
+                    {% if message.tags == 'success' %}🎉 Success{% elif message.tags == 'error' %}⚠️ Error{% else %}ℹ️ Info{% endif %}
+                </strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ message }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4 class="brand-font fw-bold"><span class="text-brand">Skill</span>Bridge</h4>
+                    <p class="text-muted small mt-3">Empowering learners worldwide with accessible skill development courses.</p>
+                </div>
+                
+                <div class="col-lg-2 col-6 mb-4">
+                    <h6 class="fw-bold mb-3">Platform</h6>
+                    <a href="{% url 'course_list' %}" class="footer-link">Browse Courses</a>
+                    <a href="{% url 'about' %}" class="footer-link">About Us</a>
+                    <a href="{% url 'terms' %}" class="footer-link">Terms of Service</a>
+                    <a href="{% url 'privacy' %}" class="footer-link">Privacy Policy</a>
+                </div>
+                
+                <div class="col-lg-2 col-6 mb-4">
+                    <h6 class="fw-bold mb-3">Account</h6>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'student_profile' %}" class="footer-link">Profile</a>
+                        <a href="{% url 'student_dashboard' %}" class="footer-link">Dashboard</a>
+                    {% else %}
+                        <a href="{% url 'student_login' %}" class="footer-link">Login</a>
+                        <a href="{% url 'student_register' %}" class="footer-link">Register</a>
+                    {% endif %}
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <h6 class="fw-bold mb-3">Contact</h6>
+                    <p class="text-muted small mb-2"><i class="bi bi-geo-alt-fill text-brand me-2"></i> Sylhet, Bangladesh</p>
+                    <p class="text-muted small mb-2"><i class="bi bi-envelope-fill text-brand me-2"></i> support@skillbridge.com</p>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top">
+                <small class="text-muted">&copy; 2025 SkillBridge. All rights reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 1. Auto-hide Toasts after 4 seconds
+        setTimeout(() => {
+            document.querySelectorAll('.toast').forEach(el => el.classList.remove('show'));
+        }, 4000);
+
+        // 2. Active Link Highlighter
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-link').forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* Theme Styles */
+    :root {
+        --brand-color: #20c997;
+        --brand-dark: #17a589;
+    }
+
+    .course-header {
+        background: white; padding: 40px; border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 30px;
+    }
+    .course-title { font-size: 32px; font-weight: 700; color: #333; margin-bottom: 10px; }
+    
+    .enroll-btn {
+        background-color: var(--brand-color); color: white; padding: 12px 35px; 
+        border-radius: 50px; border: none; font-weight: 600; cursor: pointer; font-size: 16px;
+        text-decoration: none; display: inline-block; margin-top: 15px;
+        transition: transform 0.3s ease;
+    }
+    .enroll-btn:hover { background-color: var(--brand-dark); color: white; transform: translateY(-2px); }
+    
+    .btn-enrolled { 
+        background-color: var(--brand-dark); 
+    }
+    .btn-enrolled:hover { 
+        background-color: var(--brand-color);
+    }
+
+    /* List Item Styles */
+    .content-list-section {
+        background: white; padding: 20px; border-radius: 15px; margin-bottom: 25px;
+    }
+
+    .lesson-item {
+        padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;
+        align-items: center; transition: background-color 0.2s;
+    }
+    .lesson-item:hover { background-color: #f9f9f9; }
+    
+    .lesson-link { text-decoration: none; color: #333; flex-grow: 1; }
+    .locked { color: #999; cursor: not-allowed; }
+</style>
+
+<div class="container py-5">
+    
+    <div class="course-header">
+        <h1 class="course-title">{{ course.title }}</h1>
+        <p>Mentor: <strong>{{ course.mentor.username }}</strong></p>
+        <p>{{ course.description }}</p>
+        
+        {% if request.user.is_authenticated %}
+            {% if is_enrolled %}
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    {% if lessons %}
+                        <a href="{% url 'lesson_detail' course.id lessons.0.id %}" class="enroll-btn btn-enrolled">
+                            ✅ Start Learning
+                        </a>
+                    {% else %}
+                        <button class="enroll-btn btn-enrolled" disabled>✅ No Lessons Yet</button>
+                    {% endif %}
+                    
+                    <a href="{% url 'generate_certificate' course.id %}" class="btn btn-warning mt-3" target="_blank" style="font-weight: 600; color: #2d3436;">
+                        🏆 Get Your Certificate
+                    </a>
+                </div>
+                <p style="color: green; margin-top: 10px; font-weight: 500;">You are enrolled in this course.</p>
+            {% else %}
+                <a href="{% url 'enroll_course' course.id %}" class="enroll-btn">Enroll Now</a>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'student_login' %}" class="enroll-btn">Log in to Enroll</a>
+        {% endif %}
+    </div>
+
+    <div class="content-list-section">
+        <h3>Course Content</h3>
+        
+        {% if lessons %}
+            {% for lesson in lessons %}
+                <div class="lesson-item">
+                    <span class="{% if not is_enrolled %}locked{% endif %}">
+                        {% if is_enrolled %}
+                            <a href="{% url 'lesson_detail' course.id lesson.id %}" class="lesson-link">
+                                🔓 {{ lesson.order }}. {{ lesson.title }}
+                            </a>
+                        {% else %}
+                            🔒 {{ lesson.order }}. {{ lesson.title }}
+                        {% endif %}
+                    </span>
+                    
+                    {% if is_enrolled %}
+                        <a href="{% url 'lesson_detail' course.id lesson.id %}" style="color: var(--brand-color); font-weight: bold; text-decoration: none;">
+                            Watch 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-circle-fill" viewBox="0 0 16 16" style="vertical-align: middle;">
+                              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>
+                            </svg>
+                        </a>
+                    {% else %}
+                        <span class="locked" style="font-size: 14px;">(Locked)</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">No lessons available yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="content-list-section">
+        <h3>Assignments</h3>
+        
+        {% if assignments %}
+            <div class="list-group mt-3">
+                {% for assignment in assignments %}
+                    <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        
+                        <div>
+                            <h6 class="mb-1 fw-bold">📝 {{ assignment.title }}</h6>
+                            <small class="text-muted">Due: {{ assignment.due_date|date:"d M, Y" }}</small>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            {% if request.user == course.mentor %}
+                                <a href="{% url 'assignment_submissions' course.id assignment.id %}" class="btn btn-sm btn-dark">
+                                    👀 Grade
+                                </a>
+                            {% endif %}
+
+                            {% if is_enrolled %}
+                                <a href="{% url 'assignment_detail' course.id assignment.id %}" class="btn btn-sm btn-primary rounded-pill">
+                                    Submit / View
+                                </a>
+                            {% else %}
+                                <span class="badge bg-secondary rounded-pill">Locked</span>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">No assignments available yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="content-list-section">
+        <h3>Quizzes</h3>
+        
+        {% if quizzes %}
+            <div class="list-group mt-3">
+                {% for quiz in quizzes %}
+                    {% if is_enrolled %}
+                        <a href="{% url 'take_quiz' course.id quiz.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    {% else %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center text-muted">
+                    {% endif %}
+                    
+                        <div>
+                            <h6 class="mb-1 fw-bold">❓ {{ quiz.title }}</h6>
+                            <small class="text-muted">Total Marks: {{ quiz.total_marks }}</small>
+                        </div>
+                        
+                        {% if is_enrolled %}
+                            <span class="badge bg-warning text-dark rounded-pill">Start Quiz 🚀</span>
+                        {% else %}
+                            <span class="badge bg-secondary rounded-pill">Locked</span>
+                        {% endif %}
+
+                    {% if is_enrolled %}
+                        </a>
+                    {% else %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">No quizzes available yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

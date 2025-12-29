@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --brand-color: #20c997;
+    }
+    
+    .search-filter-box {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        margin-bottom: 40px;
+    }
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 10px 15px;
+        border-color: #e9ecef;
+    }
+    .btn-search {
+        background-color: var(--brand-color);
+        border-color: var(--brand-color);
+        color: white;
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 8px;
+    }
+    .btn-search:hover {
+        background-color: #17a589;
+        border-color: #17a589;
+        color: white;
+    }
+    
+    .course-card {
+        background: white;
+        border: 1px solid #e1e1e1;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+        overflow: hidden;
+        transition: 0.3s;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    /* ছবি না থাকলে এই ডিজাইন দেখাবে */
+    .card-placeholder {
+        height: 180px; /* হাইট একটু বাড়ানো হলো */
+        background: linear-gradient(135deg, #e6fffa, #d1f7e0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--brand-color);
+        font-size: 50px;
+        font-weight: bold;
+    }
+
+    /* ছবির স্টাইল */
+    .course-img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+
+    .card-body {
+        padding: 20px;
+        flex-grow: 1;
+    }
+    .mentor-tag {
+        font-size: 12px;
+        background: #f1f2f6;
+        padding: 5px 10px;
+        border-radius: 20px;
+        color: #555;
+        font-weight: 600;
+    }
+</style>
+
+<div class="container py-5">
+    
+    <h1 class="fw-bold mb-4" style="color: #2d3436;">Explore All Courses</h1>
+    
+    <div class="search-filter-box">
+        <form method="GET" action="{% url 'course_list' %}">
+            <div class="row g-3 align-items-end">
+                
+                <div class="col-md-7">
+                    <label class="form-label fw-bold">Search by Title or Mentor</label>
+                    <input type="text" name="q" class="form-control" placeholder="E.g., Python, Django, Mentor" value="{{ search_query|default:'' }}">
+                </div>
+                
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Filter by Mentor</label>
+                    <select name="mentor" class="form-select">
+                        <option value="">All Mentors</option>
+                        {% for mentor in mentors %}
+                            <option value="{{ mentor.id }}" {% if mentor.id|stringformat:"i" == selected_mentor %}selected{% endif %}>
+                                {{ mentor.first_name }} {{ mentor.last_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-search w-100">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    {% if search_query or selected_mentor %}
+        <h5 class="mb-4 text-muted">
+            Displaying {{ courses.count }} result{% if courses.count != 1 %}s{% endif %}
+            {% if search_query %} for "{{ search_query }}"{% endif %}.
+        </h5>
+    {% endif %}
+
+    <div class="row g-4">
+        {% for course in courses %}
+        <div class="col-lg-4 col-md-6">
+            <div class="course-card">
+                
+                {% if course.course_image %}
+                    <img src="{{ course.course_image.url }}" alt="{{ course.title }}" class="course-img">
+                {% else %}
+                    <div class="card-placeholder">
+                        {{ course.title|slice:":1" }}
+                    </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="fw-bold">{{ course.title }}</h5>
+                    <p class="text-muted small mb-3">{{ course.description|truncatechars:80 }}</p>
+                    
+                    <div class="mt-auto mb-3">
+                        <span class="mentor-tag">Mentor: {{ course.mentor.first_name }}</span>
+                    </div>
+
+                    {% if request.user.is_authenticated %}
+                        {% if course.id in enrolled_courses_ids %}
+                            <a href="{% url 'course_detail' course.id %}" class="btn btn-sm btn-outline-success fw-bold">
+                                Continue Learning
+                            </a>
+                        {% else %}
+                            <a href="{% url 'course_detail' course.id %}" class="btn btn-sm btn-search fw-bold">
+                                View & Enroll
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'student_login' %}" class="btn btn-sm btn-search fw-bold">
+                            Login to Enroll
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <h4 class="text-muted">Sorry, no courses match your criteria.</h4>
+            <a href="{% url 'course_list' %}" class="btn btn-outline-secondary mt-3">Clear Search</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

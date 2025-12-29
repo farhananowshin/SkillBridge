@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* --- Theme Variables & Global Styles --- */
+    :root {
+        --brand-color: #20c997; /* Primary Green */
+        --brand-dark: #17a589;
+        --dark-text: #2c3e50;
+        --soft-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        --bg-color: #f8f9fa;
+        --text-muted: #666;
+    }
+
+    body {
+        background-color: var(--bg-color);
+    }
+    
+    /* 1. Hero Section */
+    .hero-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 60px 20px;
+        min-height: 70vh;
+        max-width: 1200px;
+        margin: 0 auto; 
+    }
+    .hero-text {
+        flex: 1;
+        padding-right: 50px;
+    }
+    .hero-text h1 {
+        font-size: 48px;
+        font-weight: 800;
+        color: var(--dark-text);
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+    .hero-text span {
+        color: var(--brand-color);
+    }
+    .hero-text p {
+        font-size: 18px;
+        color: var(--text-muted);
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+    
+    .hero-btn {
+        display: inline-block;
+        background-color: var(--brand-color);
+        color: white;
+        padding: 15px 40px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 50px;
+        text-decoration: none;
+        box-shadow: 0 4px 15px rgba(32, 201, 151, 0.4);
+        transition: transform 0.3s ease;
+    }
+    .hero-btn:hover {
+        background-color: var(--brand-dark);
+        transform: translateY(-3px);
+        color: white;
+    }
+
+    .hero-image-box {
+        flex: 1;
+        /* বর্ডার এবং ব্যাকগ্রাউন্ড সরিয়ে দেওয়া হলো যাতে আপনার ছবিটি সুন্দর দেখায় */
+        background-color: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    /* হিরো ইমেজের স্টাইল */
+    .hero-image-box img {
+        max-width: 100%;
+        height: auto;
+        /* হালকা একটু শ্যাডো দেওয়া হলো যাতে ভেসে থাকে */
+        filter: drop-shadow(0 10px 20px rgba(32, 201, 151, 0.2));
+        animation: float 4s ease-in-out infinite;
+    }
+
+    /* ভাসমান এনিমেশন */
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+        100% { transform: translateY(0px); }
+    }
+
+    /* 2. Features/Stats Section */
+    .feature-card {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: var(--soft-shadow);
+        text-align: center;
+        transition: 0.3s;
+        border: 1px solid #eee;
+        height: 100%;
+    }
+    .feature-card:hover {
+        border-color: var(--brand-color);
+        transform: translateY(-5px);
+    }
+    .feature-icon {
+        color: var(--brand-color);
+        font-size: 36px;
+        margin-bottom: 15px;
+    }
+
+    /* 3. Course Cards */
+    .course-card {
+        background: white;
+        border: 1px solid #e1e1e1;
+        border-radius: 12px;
+        box-shadow: var(--soft-shadow);
+        overflow: hidden;
+        transition: 0.3s;
+        height: 100%;
+    }
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    .course-card-body {
+        padding: 20px;
+    }
+    
+    /* আসল ছবির স্টাইল */
+    .course-img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    /* ছবি না থাকলে আগের প্লেসহোল্ডার */
+    .course-img-placeholder {
+        height: 150px;
+        background: linear-gradient(120deg, #f0f0f0, #e0e0e0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark-text);
+        font-size: 30px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+        .hero-section { flex-direction: column; text-align: center; }
+        .hero-text { padding-right: 0; margin-bottom: 30px; }
+        .hero-image-box { flex: none; width: 100%; height: auto; }
+        .hero-text h1 { font-size: 40px; }
+    }
+</style>
+
+<div class="container">
+    
+    <div class="hero-section">
+        <div class="hero-text">
+            <h1>Unlock Your Potential with <span>SkillBridge</span></h1>
+            <p>
+                Master essential skills with our structured courses. Access high-quality video lessons, submit practical assignments, and earn professional certifications upon completion.
+            </p>
+            
+            {% if not user.is_authenticated %}
+                <a href="{% url 'student_register' %}" class="hero-btn">Get Started Now &rarr;</a>
+            {% else %}
+                <a href="{% url 'course_list' %}" class="hero-btn">View Courses &rarr;</a>
+            {% endif %}
+        </div>
+
+        <div class="hero-image-box">
+             <img src="{% static 'images/hero_image.jpg' %}" alt="Learning Dashboard">
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row text-center mb-5">
+        <h2 class="fw-bold" style="color: var(--dark-text);">Why Choose SkillBridge?</h2>
+        <p class="text-muted">A platform designed for real-world skill development.</p>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">🎬</div>
+                <h5 class="fw-bold">Structured Learning Path</h5>
+                <p class="text-muted small">Follow step-by-step video lessons with quizzes and assignments integrated into the curriculum.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">👨‍🏫</div>
+                <h5 class="fw-bold">Mentor Graded Feedback</h5>
+                <p class="text-muted small">Get personal marks and feedback on your submitted assignments directly from expert mentors.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h5 class="fw-bold">Professional Certification</h5>
+                <p class="text-muted small">Receive an official, verifiable certificate upon successful completion of any paid course.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row align-items-center mb-4">
+        <div class="col-md-8">
+            <h2 class="fw-bold" style="color: var(--dark-text);">Featured Courses</h2>
+            <p class="text-muted">Start learning with our most popular courses.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a href="{% url 'course_list' %}" class="btn btn-outline-dark rounded-pill">View All Courses</a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for course in courses|slice:":3" %}
+        <div class="col-lg-4 col-md-6">
+            <div class="course-card">
+                
+                {% if course.course_image %}
+                    <img src="{{ course.course_image.url }}" alt="{{ course.title }}" class="course-img">
+                {% else %}
+                    <div class="course-img-placeholder">
+                        {{ course.title|slice:":1" }}
+                    </div>
+                {% endif %}
+                
+                <div class="course-card-body">
+                    <h5 class="fw-bold mb-1">{{ course.title }}</h5>
+                    <p class="text-muted small">Mentor: {{ course.mentor.first_name }} {{ course.mentor.last_name }}</p>
+                    <a href="{% url 'course_detail' course.id %}" class="btn btn-sm btn-dark w-100 mt-2">View Course &rarr;</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted">No courses available yet. Please add courses in the Admin Panel.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

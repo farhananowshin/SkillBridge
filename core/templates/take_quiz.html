@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-dark text-white p-4">
+                    <h3 class="mb-0">📝 {{ quiz.title }}</h3>
+                    <p class="mb-0 opacity-75">{{ quiz.description }}</p>
+                </div>
+                
+                <div class="card-body p-5">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {% for question in quiz.questions.all %}
+                            <div class="mb-4">
+                                <h5 class="fw-bold">{{ forloop.counter }}. {{ question.text }}</h5>
+                                <div class="list-group mt-2">
+                                    {% for choice in question.choices.all %}
+                                        <label class="list-group-item list-group-item-action">
+                                            <input class="form-check-input me-2" type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" required>
+                                            {{ choice.text }}
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        <div class="d-grid mt-5">
+                            <button type="submit" class="btn btn-success btn-lg fw-bold">Submit Quiz 🚀</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

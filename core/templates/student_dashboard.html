@@ -1,0 +1,369 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* --- Custom Theme Variables --- */
+    :root {
+        --brand-color: #20c997;
+        --brand-hover: #17a589;
+        --text-dark: #2d3436;
+        --text-muted: #636e72;
+        --card-bg: #ffffff;
+        --body-bg: #f8f9fa;
+        --soft-shadow: 0 8px 30px rgba(0,0,0,0.04);
+        --border-radius: 12px;
+    }
+
+    body {
+        background-color: var(--body-bg);
+        color: var(--text-dark);
+    }
+
+    /* --- 1. Header Section --- */
+    .dashboard-header {
+        background: var(--card-bg);
+        padding: 30px 40px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--soft-shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        border-left: 5px solid var(--brand-color);
+    }
+    
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #e2e6ea;
+        padding: 2px;
+    }
+
+    .avatar-placeholder {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--brand-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: bold;
+    }
+
+    /* --- 2. Stats Cards --- */
+    .stat-card {
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 25px;
+        border: none;
+        box-shadow: var(--soft-shadow);
+        transition: transform 0.3s ease;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+    .icon-teal { background: #e6fffa; color: var(--brand-color); }
+    .icon-orange { background: #fff4e6; color: #fd7e14; }
+    .icon-blue { background: #e7f5ff; color: #228be6; }
+
+    .stat-data h3 { font-size: 28px; font-weight: 800; margin: 0; color: var(--text-dark); }
+    .stat-data p { margin: 0; color: var(--text-muted); font-size: 14px; font-weight: 600; text-transform: uppercase; }
+
+    /* --- 3. Navigation Tabs --- */
+    .custom-nav-pills {
+        background: var(--card-bg);
+        padding: 10px;
+        border-radius: 50px;
+        display: inline-flex;
+        box-shadow: var(--soft-shadow);
+        margin-bottom: 30px;
+    }
+    .custom-nav-pills .nav-link {
+        color: var(--text-muted);
+        font-weight: 600;
+        border-radius: 40px;
+        padding: 10px 30px;
+        transition: all 0.3s ease;
+    }
+    .custom-nav-pills .nav-link.active {
+        background-color: var(--brand-color);
+       color: white !important;
+        box-shadow: 0 4px 15px rgba(32, 201, 151, 0.4);
+    }
+
+    /* --- Course Cards --- */
+    .course-card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--soft-shadow);
+        transition: 0.3s;
+        overflow: hidden;
+        height: 100%;
+        background: white;
+    }
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+    }
+
+    /* 👇 নতুন যোগ করা স্টাইল (ছবির জন্য) 👇 */
+    .course-img {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+    }
+
+    .course-img-placeholder {
+        height: 140px;
+        background: linear-gradient(45deg, #20c997, #1abc9c);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 40px;
+        font-weight: bold;
+    }
+    
+    .course-body { padding: 25px; }
+    .btn-continue {
+        background: var(--text-dark);
+        color: white;
+        border-radius: 8px;
+        font-weight: 600;
+        width: 100%;
+        padding: 10px;
+        border: none;
+    }
+    .btn-continue:hover { background: #000; color: white; }
+
+    /* --- Tables --- */
+    .table-container {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--soft-shadow);
+        overflow: hidden;
+    }
+    .clean-table thead th {
+        background-color: #f8f9fa;
+        color: var(--text-muted);
+        font-weight: 600;
+        border: none;
+        padding: 18px 25px;
+    }
+    .clean-table tbody td {
+        padding: 18px 25px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f1f1;
+        color: var(--text-dark);
+    }
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+    .badge-success { background: #d3f9d8; color: #2b8a3e; }
+    .badge-pending { background: #fff3bf; color: #f08c00; }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .dashboard-header { flex-direction: column; text-align: center; gap: 15px; }
+        .user-info { flex-direction: column; }
+    }
+</style>
+
+<div class="container py-5">
+    
+    <div class="dashboard-header">
+        <div class="user-info">
+            {% if user.profile_photo %}
+                <img src="{{ user.profile_photo.url }}" class="profile-avatar" alt="Profile">
+            {% else %}
+                <div class="avatar-placeholder">
+                    {{ user.first_name|first }}
+                </div>
+            {% endif %}
+            
+            <div>
+                <h2 class="fw-bold mb-0">Welcome back, {{ user.first_name }}!</h2>
+                <p class="text-muted mb-0">Track your learning progress and achievements.</p>
+            </div>
+        </div>
+        <div>
+            <a href="{% url 'student_profile' %}" class="btn btn-outline-dark rounded-pill px-4 fw-bold">
+                <i class="bi bi-pencil-square"></i> Edit Profile
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-data">
+                    <h3>{{ enrollments.count }}</h3>
+                    <p>Enrolled Courses</p>
+                </div>
+                <div class="stat-icon icon-teal">📚</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-data">
+                    <h3>{{ submissions.count }}</h3>
+                    <p>Assignments</p>
+                </div>
+                <div class="stat-icon icon-orange">📝</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-data">
+                    <h3>{{ quiz_results.count }}</h3>
+                    <p>Quizzes Taken</p>
+                </div>
+                <div class="stat-icon icon-blue">🏆</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <div class="nav nav-pills custom-nav-pills" id="pills-tab" role="tablist">
+            <button class="nav-link active" id="pills-courses-tab" data-bs-toggle="pill" data-bs-target="#pills-courses">My Courses</button>
+            <button class="nav-link" id="pills-assignments-tab" data-bs-toggle="pill" data-bs-target="#pills-assignments">Assignments</button>
+            <button class="nav-link" id="pills-quizzes-tab" data-bs-toggle="pill" data-bs-target="#pills-quizzes">Quiz Results</button>
+        </div>
+    </div>
+
+    <div class="tab-content" id="pills-tabContent">
+        
+        <div class="tab-pane fade show active" id="pills-courses">
+            <div class="row g-4">
+                {% for enrollment in enrollments %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="course-card">
+                        
+                        {% if enrollment.course.course_image %}
+                            <img src="{{ enrollment.course.course_image.url }}" class="course-img" alt="{{ enrollment.course.title }}">
+                        {% else %}
+                            <div class="course-img-placeholder">
+                                {{ enrollment.course.title|slice:":1" }}
+                            </div>
+                        {% endif %}
+                        <div class="course-body">
+                            <h5 class="fw-bold mb-2">{{ enrollment.course.title }}</h5>
+                            <p class="text-muted small mb-4">By Mentor: {{ enrollment.course.mentor.username }}</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge bg-light text-dark border">In Progress</span>
+                            </div>
+                            
+                            <a href="{% url 'course_detail' enrollment.course.id %}" class="btn btn-continue">Continue Learning &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                    <h4 class="text-muted">You haven't enrolled in any courses yet.</h4>
+                    <a href="{% url 'course_list' %}" class="btn btn-primary mt-3" style="background: var(--brand-color); border: none;">Browse Courses</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="pills-assignments">
+            <div class="table-container">
+                <table class="table clean-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Assignment Title</th>
+                            <th>Course Name</th>
+                            <th>Submitted On</th>
+                            <th>Status</th>
+                            <th class="text-end">Marks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sub in submissions %}
+                        <tr>
+                            <td class="fw-bold">{{ sub.assignment.title }}</td>
+                            <td>{{ sub.assignment.course.title }}</td>
+                            <td class="text-muted">{{ sub.submitted_at|date:"M d, Y" }}</td>
+                            <td>
+                                {% if sub.marks %}
+                                    <span class="status-badge badge-success">Graded</span>
+                                {% else %}
+                                    <span class="status-badge badge-pending">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end fw-bold">
+                                {% if sub.marks %}
+                                    {{ sub.marks }} / 100
+                                {% else %}
+                                    --
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="text-center py-5 text-muted">No assignments submitted yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="pills-quizzes">
+            <div class="table-container">
+                <table class="table clean-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Quiz Title</th>
+                            <th>Course Name</th>
+                            <th>Date Taken</th>
+                            <th class="text-end">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for res in quiz_results %}
+                        <tr>
+                            <td class="fw-bold">{{ res.quiz.title }}</td>
+                            <td>{{ res.quiz.course.title }}</td>
+                            <td class="text-muted">{{ res.attempted_at|date:"M d, Y" }}</td>
+                            <td class="text-end">
+                                <span class="badge bg-primary fs-6">{{ res.score }}</span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-center py-5 text-muted">No quizzes taken yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

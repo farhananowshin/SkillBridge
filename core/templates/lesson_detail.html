@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* --- Premium Variables --- */
+    :root {
+        --primary-color: #00b894; /* Vibrant Teal */
+        --primary-hover: #00a383;
+        --dark-bg: #1e272e;       /* Cinematic Dark Background */
+        --sidebar-bg: #ffffff;
+        --text-dark: #2d3436;
+        --text-muted: #636e72;
+        --border-color: #dfe6e9;
+    }
+
+    /* পুরো পেজের ব্যাকগ্রাউন্ড */
+    body {
+        background-color: #f1f2f6; 
+    }
+
+    .lesson-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        min-height: calc(100vh - 70px); /* ন্যাপবার বাদ দিয়ে বাকি অংশ */
+    }
+
+    /* --- বাম পাশ: ভিডিও প্লেয়ার (Cinematic Look) --- */
+    .main-content {
+        flex: 1;
+        background-color: white;
+        min-width: 60%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* ভিডিও কন্টেইনার (কালো ব্যাকগ্রাউন্ড) */
+    .video-container-bg {
+        background-color: #000;
+        padding: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .video-frame {
+        width: 100%;
+        max-width: 1000px;
+        aspect-ratio: 16 / 9;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        background: #000;
+    }
+
+    .video-frame iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* লেসন ডিটেইলস সেকশন */
+    .lesson-details {
+        padding: 40px;
+        max-width: 1000px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .lesson-badge {
+        background-color: rgba(0, 184, 148, 0.1);
+        color: var(--primary-color);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    .lesson-title {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 20px;
+    }
+
+    .description-box {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 4px solid var(--primary-color);
+        color: #555;
+        line-height: 1.7;
+    }
+
+    /* --- বাটন ডিজাইন --- */
+    .action-btn {
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-prev {
+        background: white;
+        color: var(--text-muted);
+        border: 2px solid var(--border-color);
+    }
+    .btn-prev:hover {
+        border-color: var(--text-muted);
+        color: var(--text-dark);
+    }
+
+    .btn-next {
+        background: var(--primary-color);
+        color: white;
+        border: 2px solid var(--primary-color);
+        box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3);
+    }
+    .btn-next:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+    }
+
+    /* --- ডান পাশ: প্লেলিস্ট সাইডবার --- */
+    .sidebar-playlist {
+        width: 400px;
+        background: var(--sidebar-bg);
+        border-left: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 70px);
+        position: sticky;
+        top: 70px; /* ফিক্সড থাকবে */
+    }
+
+    .sidebar-header {
+        padding: 20px;
+        border-bottom: 1px solid var(--border-color);
+        background: white;
+    }
+
+    .playlist-scroll {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    /* কাস্টম স্ক্রলবার */
+    .playlist-scroll::-webkit-scrollbar {
+        width: 6px;
+    }
+    .playlist-scroll::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 10px;
+    }
+
+    .playlist-item {
+        display: flex;
+        padding: 18px 20px;
+        border-bottom: 1px solid #f1f1f1;
+        text-decoration: none;
+        color: var(--text-dark);
+        transition: 0.2s;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .playlist-item:hover {
+        background-color: #f8fffd;
+    }
+
+    /* Active Lesson Style */
+    .playlist-item.active {
+        background-color: #e6fffa;
+        border-left: 4px solid var(--primary-color);
+    }
+    .playlist-item.active .item-title {
+        color: var(--primary-color);
+        font-weight: 700;
+    }
+    .playlist-item.active .status-icon {
+        color: var(--primary-color);
+    }
+
+    .status-icon {
+        margin-top: 3px;
+        color: #b2bec3;
+        font-size: 14px;
+    }
+    
+    .item-title {
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 1.4;
+    }
+    .item-duration {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 4px;
+        display: block;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .lesson-wrapper { flex-direction: column; }
+        .sidebar-playlist { width: 100%; height: auto; border-left: none; }
+        .video-container-bg { padding: 0; }
+        .video-frame { border-radius: 0; }
+    }
+</style>
+
+<div class="lesson-wrapper">
+    
+    <div class="main-content">
+        
+        <div class="video-container-bg">
+            <div class="video-frame">
+                {% if lesson.video_url %}
+                    <iframe src="{{ lesson.video_url|cut:' ' }}" title="{{ lesson.title }}" allowfullscreen></iframe>
+                {% else %}
+                    <div style="display:flex; justify-content:center; align-items:center; height:100%; color:white; flex-direction:column;">
+                        <span style="font-size: 40px;">🎬</span>
+                        <p>No video available or invalid link</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="lesson-details">
+            <span class="lesson-badge">Lesson {{ lesson.order }}</span>
+            <h1 class="lesson-title">{{ lesson.title }}</h1>
+            
+            <div class="description-box">
+                <strong>Overview:</strong><br>
+                {{ lesson.content }}
+            </div>
+
+            <div class="d-flex justify-content-between mt-5">
+                {% if previous_lesson %}
+                    <a href="{% url 'lesson_detail' course.id previous_lesson.id %}" class="action-btn btn-prev">
+                        &laquo; Previous
+                    </a>
+                {% else %}
+                    <button class="action-btn btn-prev" disabled style="opacity: 0.5; cursor: not-allowed;">&laquo; Previous</button>
+                {% endif %}
+
+                {% if next_lesson %}
+                    <a href="{% url 'lesson_detail' course.id next_lesson.id %}" class="action-btn btn-next">
+                        Next Lesson &raquo;
+                    </a>
+                {% else %}
+                    <a href="{% url 'course_detail' course.id %}" class="action-btn btn-next" style="background-color: #27ae60; border-color: #27ae60;">
+                        ✅ Finish Course
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar-playlist">
+        <div class="sidebar-header">
+            <h5 style="margin:0; font-weight:700;">Course Content</h5>
+            <small style="color: #636e72;">{{ course.title }}</small>
+        </div>
+        
+        <div class="playlist-scroll">
+            {% for l in course.lessons.all %}
+                <a href="{% url 'lesson_detail' course.id l.id %}" class="playlist-item {% if l.id == lesson.id %}active{% endif %}">
+                    
+                    <div class="status-icon">
+                        {% if l.id == lesson.id %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-circle-fill" viewBox="0 0 16 16">
+                              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>
+                            </svg>
+                        {% else %}
+                            <span style="font-weight:bold; font-size:12px;">{{ l.order }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <span class="item-title">{{ l.title }}</span>
+                        <span class="item-duration">Video Lesson</span>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

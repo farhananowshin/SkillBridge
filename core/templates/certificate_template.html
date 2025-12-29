@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Certificate of Completion</title>
+    <style>
+        @page {
+            size: A4 landscape; /* Landscape mode (Horizontal) */
+            margin: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f7f7f7;
+        }
+        .certificate-container {
+            width: 297mm; /* A4 width in mm */
+            height: 210mm; /* A4 height in mm */
+            padding: 30px;
+            border: 20px solid #2d3436;
+            box-sizing: border-box;
+            background: #ffffff url('certificate_bg.png') no-repeat center center; /* যদি কোনো ব্যাকগ্রাউন্ড ইমেজ থাকে */
+            background-size: cover;
+            text-align: center;
+        }
+        .header {
+            color: #20c997;
+            font-size: 36pt;
+            font-weight: bold;
+            margin-top: 20pt;
+        }
+        .subheader {
+            font-size: 14pt;
+            color: #666;
+            margin-top: 10pt;
+        }
+        .main-text {
+            font-size: 16pt;
+            margin-top: 30pt;
+            line-height: 1.5;
+        }
+        .student-name {
+            font-size: 40pt;
+            font-family: 'Times New Roman', serif;
+            color: #2d3436;
+            margin: 15pt 0;
+            border-bottom: 2px solid #ccc;
+            display: inline-block;
+        }
+        .course-title {
+            font-size: 24pt;
+            font-weight: bold;
+            color: #20c997;
+            margin-top: 10pt;
+        }
+        .signatures {
+            display: flex;
+            justify-content: space-around;
+            width: 80%;
+            margin: 60pt auto 0;
+        }
+        .signature-box {
+            text-align: center;
+            width: 40%;
+        }
+        .signature-line {
+            border-top: 1px solid #2d3436;
+            padding-top: 5pt;
+            font-size: 12pt;
+            font-weight: bold;
+        }
+        .date {
+            margin-top: 20pt;
+            font-size: 12pt;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate-container">
+        <div class="header">CERTIFICATE OF COMPLETION</div>
+        <div class="subheader">This certifies that</div>
+        
+        <div class="student-name">{{ student_name|upper }}</div>
+        
+        <div class="main-text">has successfully completed the requirements for the course</div>
+        
+        <div class="course-title">{{ course_title }}</div>
+        
+        <div class="date">Awarded on {{ completion_date|date:"F d, Y" }}</div>
+
+        <div class="signatures">
+            <div class="signature-box">
+                <div class="signature-line">Mentor: {{ mentor_name }}</div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line">CEO, SkillBridge</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
