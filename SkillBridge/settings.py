@@ -19,8 +19,6 @@ SECRET_KEY = 'django-insecure-s8&m$l+o%n*t=bohman@ed%mt(&%v40#$)hn6gt#y2o^*ovdwp
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-# Deployment এর সময় বা অন্য ডিভাইস থেকে এক্সেস করার জন্য '*' রাখা ভালো
 ALLOWED_HOSTS = ['*']
 
 
@@ -53,7 +51,7 @@ ROOT_URLCONF = 'SkillBridge.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # যদি কোনো গ্লোবাল টেমপ্লেট ফোল্ডার থাকে
+        'DIRS': [BASE_DIR / 'templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
