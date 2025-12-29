@@ -68,23 +68,21 @@
 
     .hero-image-box {
         flex: 1;
-        /* বর্ডার এবং ব্যাকগ্রাউন্ড সরিয়ে দেওয়া হলো যাতে আপনার ছবিটি সুন্দর দেখায় */
+        
         background-color: transparent;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
     }
-    /* হিরো ইমেজের স্টাইল */
+    
     .hero-image-box img {
         max-width: 100%;
-        height: auto;
-        /* হালকা একটু শ্যাডো দেওয়া হলো যাতে ভেসে থাকে */
+        
         filter: drop-shadow(0 10px 20px rgba(32, 201, 151, 0.2));
         animation: float 4s ease-in-out infinite;
     }
 
-    /* ভাসমান এনিমেশন */
     @keyframes float {
         0% { transform: translateY(0px); }
         50% { transform: translateY(-15px); }
@@ -130,14 +128,14 @@
         padding: 20px;
     }
     
-    /* আসল ছবির স্টাইল */
+   
     .course-img {
         width: 100%;
         height: 150px;
         object-fit: cover;
     }
 
-    /* ছবি না থাকলে আগের প্লেসহোল্ডার */
+    
     .course-img-placeholder {
         height: 150px;
         background: linear-gradient(120deg, #f0f0f0, #e0e0e0);

@@ -13,7 +13,7 @@
         --border-color: #dfe6e9;
     }
 
-    /* পুরো পেজের ব্যাকগ্রাউন্ড */
+ 
     body {
         background-color: #f1f2f6; 
     }
@@ -21,10 +21,9 @@
     .lesson-wrapper {
         display: flex;
         flex-wrap: wrap;
-        min-height: calc(100vh - 70px); /* ন্যাপবার বাদ দিয়ে বাকি অংশ */
+        min-height: calc(100vh - 70px); 
     }
 
-    /* --- বাম পাশ: ভিডিও প্লেয়ার (Cinematic Look) --- */
     .main-content {
         flex: 1;
         background-color: white;
@@ -33,7 +32,7 @@
         flex-direction: column;
     }
 
-    /* ভিডিও কন্টেইনার (কালো ব্যাকগ্রাউন্ড) */
+    
     .video-container-bg {
         background-color: #000;
         padding: 40px;
@@ -58,7 +57,7 @@
         border: none;
     }
 
-    /* লেসন ডিটেইলস সেকশন */
+   
     .lesson-details {
         padding: 40px;
         max-width: 1000px;
@@ -93,7 +92,7 @@
         line-height: 1.7;
     }
 
-    /* --- বাটন ডিজাইন --- */
+ 
     .action-btn {
         padding: 12px 30px;
         border-radius: 8px;
@@ -126,7 +125,7 @@
         transform: translateY(-2px);
     }
 
-    /* --- ডান পাশ: প্লেলিস্ট সাইডবার --- */
+    
     .sidebar-playlist {
         width: 400px;
         background: var(--sidebar-bg);
@@ -135,7 +134,7 @@
         flex-direction: column;
         height: calc(100vh - 70px);
         position: sticky;
-        top: 70px; /* ফিক্সড থাকবে */
+        top: 70px; 
     }
 
     .sidebar-header {
@@ -149,7 +148,7 @@
         overflow-y: auto;
     }
 
-    /* কাস্টম স্ক্রলবার */
+
     .playlist-scroll::-webkit-scrollbar {
         width: 6px;
     }
