@@ -9,12 +9,12 @@ from django.utils import timezone
 # PDF Generation Imports
 from django.template.loader import get_template
 from django.http import HttpResponse
-from weasyprint import HTML, CSS # PDF তৈরির জন্য WeasyPrint
-from django.conf import settings # Static ফাইল ব্যবহারের জন্য
+from weasyprint import HTML, CSS 
+from django.conf import settings 
 
-# মডেল ইমপোর্ট (সবগুলো মডেল দরকার)
+
 from .models import Course, Enrollment, Lesson, Assignment, Submission, Quiz, QuizResult, Question, Choice, User
-# ফর্ম ইমপোর্ট
+
 from .forms import StudentRegistrationForm, StudentProfileUpdateForm, AssignmentSubmissionForm 
 
 # 1. Home Page View
@@ -22,7 +22,7 @@ def home(request):
     courses = Course.objects.all()
     return render(request, 'home.html', {'courses': courses})
 
-# 2. Course List View (Search & Filter Logic সহ)
+# 2. Course List View 
 def course_list(request):
     courses = Course.objects.all()
     
@@ -41,12 +41,12 @@ def course_list(request):
     if mentor_id:
         courses = courses.filter(mentor_id=mentor_id)
 
-    # এনরোল্ড কোর্স আইডি লিস্ট
+    
     enrolled_courses_ids = []
     if request.user.is_authenticated:
         enrolled_courses_ids = Enrollment.objects.filter(student=request.user).values_list('course__id', flat=True)
     
-    # মেন্টর লিস্ট ফিল্টার ড্রপডাউনের জন্য
+    
     mentors = User.objects.filter(role='mentor')
         
     return render(request, 'course_list.html', {
@@ -299,7 +299,7 @@ def take_quiz(request, course_id, quiz_id):
         'quiz': quiz
     })
 
-# 14. Generate Certificate View (নতুন যোগ করা হলো)
+# 14. Generate Certificate View 
 @login_required
 def generate_certificate(request, course_id):
     course = get_object_or_404(Course, id=course_id)

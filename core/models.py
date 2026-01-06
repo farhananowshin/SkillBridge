@@ -45,7 +45,7 @@ class User(AbstractUser):
         return self.username
 
 
-# 2. Course Model (Updated with Image Field)
+# 2. Course Model 
 class Course(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
@@ -55,7 +55,7 @@ class Course(models.Model):
         related_name='mentored_courses',
         limit_choices_to={'role': 'mentor'},
     )
-    # 👇 এখানে নতুন ফিল্ডটি যোগ করা হয়েছে
+    
     course_image = models.ImageField(upload_to='course_images/', blank=True, null=True)
     
     created_at = models.DateTimeField(auto_now_add=True)
@@ -64,7 +64,7 @@ class Course(models.Model):
         return self.title
 
 
-# 3. Lesson Model (YouTube embed auto-fix সহ)
+# 3. Lesson Model 
 class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
     title = models.CharField(max_length=200)
